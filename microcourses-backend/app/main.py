@@ -1,18 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database.connection import Base, engine
-from app.routes import user_routes, auth_routes, admin_routes, creator_routes
-from app.routes import lesson_routes
-from app.routes import course_routes
-from app.routes import progress_routes
-from app.routes import student_routes
-from app.routes import admin_routes
-from app.routes import certificate_routes
-
-
-
-
-
+from app.routes import (
+    user_routes,
+    auth_routes,
+    admin_routes,
+    creator_routes,
+    lesson_routes,
+    course_routes,
+    progress_routes,
+    student_routes,
+    certificate_routes,
+)
 
 # ✅ Create database tables
 Base.metadata.create_all(bind=engine)
@@ -26,15 +25,16 @@ app = FastAPI(
 
 # ✅ Allow frontend (React) to access backend (CORS)
 origins = [
-    "http://localhost:5173",  # your Vite frontend
-    "http://127.0.0.1:5173",  # fallback just in case
+    "https://microcourses-lms.netlify.app",  # your deployed frontend (Netlify)
+    "http://localhost:5173",                 # for local development
+    "http://127.0.0.1:5173",                 # fallback
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # GET, POST, PUT, DELETE etc.
+    allow_methods=["*"],  # Allow all methods (GET, POST, PUT, DELETE)
     allow_headers=["*"],  # Allow all headers
 )
 
@@ -46,10 +46,8 @@ app.include_router(creator_routes.router)
 app.include_router(course_routes.router)
 app.include_router(lesson_routes.router)
 app.include_router(student_routes.router)
-# after app = FastAPI(...)
 app.include_router(progress_routes.router)
 app.include_router(certificate_routes.router)
-
 
 # ✅ Root endpoint
 @app.get("/")
