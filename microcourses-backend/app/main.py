@@ -12,32 +12,30 @@ from app.routes import (
     student_routes,
     certificate_routes,
 )
-import os
 
-# ✅ Create database tables
+# ✅ Create tables
 Base.metadata.create_all(bind=engine)
 
-# ✅ Initialize FastAPI app
 app = FastAPI(
     title="MicroCourses LMS",
-    description="Learning Management System Backend using FastAPI and MVC structure 🚀",
+    description="Learning Management System Backend using FastAPI 🚀",
     version="1.0.0",
 )
 
-# ✅ CORS — Allow all for testing (you can restrict later)
+# ✅ Allow frontend (React) to access backend (CORS)
 origins = [
-    "https://microcourses-lms.netlify.app",  # your Netlify frontend
-    "http://localhost:5173",                 # for local dev
-    "http://127.0.0.1:5173",
-    "*",                                     # allow all (for debugging Render CORS issues)
+    "https://microcourses-lms.netlify.app",  # ✅ Deployed frontend
+    "https://microcourses-lms.onrender.com",  # ✅ Backend itself
+    "http://localhost:5173",                 # Local dev
+    "http://127.0.0.1:5173"
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],   # GET, POST, PUT, DELETE
-    allow_headers=["*"],   # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ✅ Include routes
@@ -51,8 +49,7 @@ app.include_router(student_routes.router)
 app.include_router(progress_routes.router)
 app.include_router(certificate_routes.router)
 
-# ✅ Root endpoint
+# ✅ Root
 @app.get("/")
 def home():
-    return {"message": "Welcome to MicroCourses LMS API 🚀", "CORS": "Enabled"}
-
+    return {"message": "Welcome to MicroCourses LMS API 🚀"}
