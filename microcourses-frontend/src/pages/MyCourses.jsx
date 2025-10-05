@@ -4,6 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://microcourses-lms.onrender.com";
+
 const MyCourses = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
@@ -24,7 +26,7 @@ const MyCourses = () => {
       });
 
       axios
-        .get("http://127.0.0.1:8000/creator/my-courses", {
+        .get(`${API_BASE}/creator/my-courses`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => setCourses(res.data))
@@ -55,7 +57,7 @@ const MyCourses = () => {
 
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/lessons/course/${courseId}`, {
+      const res = await axios.get(`${API_BASE}/lessons/course/${courseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLessons((prev) => ({ ...prev, [courseId]: res.data }));

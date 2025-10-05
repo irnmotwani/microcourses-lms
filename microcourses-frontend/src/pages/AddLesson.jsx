@@ -11,6 +11,10 @@ const AddLesson = () => {
     content: "",
   });
   const [loading, setLoading] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://microcourses-lms.onrender.com";
+
+// Then:
+
 
   // ✅ Fetch creator's courses for dropdown
   useEffect(() => {
@@ -18,7 +22,7 @@ const AddLesson = () => {
     if (!token) return toast.error("Please login first!");
 
     axios
-      .get("http://127.0.0.1:8000/creator/my-courses", {
+      .get(`${API_BASE}/creator/my-courses`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setCourses(res.data))
@@ -36,7 +40,7 @@ const AddLesson = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://127.0.0.1:8000/lessons/", formData, {
+      await axios.post(`${API_BASE}/lessons/`, formData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

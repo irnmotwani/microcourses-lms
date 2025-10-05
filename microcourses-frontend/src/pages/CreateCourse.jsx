@@ -10,7 +10,7 @@ const CreateCourse = () => {
     category: "",
   });
   const [loading, setLoading] = useState(false);
-
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://microcourses-lms.onrender.com";
   // Handle input field change
   const handleChange = (e) => {
     setFormData({
@@ -32,7 +32,7 @@ const CreateCourse = () => {
       }
 
       // POST request to backend
-      await axios.post("http://127.0.0.1:8000/creator/courses", formData, {
+      await axios.post(`${API_BASE}/creator/courses`, formData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`, // Send JWT token to backend

@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://microcourses-lms.onrender.com";
+
+// Then:
+
+
 const API = axios.create({
-  baseURL: "http://127.0.0.1:8000", // your FastAPI backend URL
+  baseURL: API_BASE,
 });
 
 // ✅ Add token automatically (if available)

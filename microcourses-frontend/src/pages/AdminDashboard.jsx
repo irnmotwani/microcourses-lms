@@ -27,6 +27,10 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://microcourses-lms.onrender.com";
+
+// Then:
+
 
   useEffect(() => {
     if (!token) return navigate("/");
@@ -48,7 +52,7 @@ const AdminDashboard = () => {
   // ✅ Fetch Platform Stats
   const fetchStats = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/admin/stats", {
+      const res = await axios.get(`${API_BASE}/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStats(res.data);
@@ -60,7 +64,7 @@ const AdminDashboard = () => {
   // ✅ Fetch Pending Courses
   const fetchPendingCourses = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/admin/review/courses", {
+      const res = await axios.get(`${API_BASE}/admin/review/courses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCourses(res.data);
@@ -74,7 +78,7 @@ const AdminDashboard = () => {
   // ✅ Fetch All Users
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/admin/users", {
+      const res = await axios.get(`${API_BASE}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);
@@ -87,7 +91,7 @@ const AdminDashboard = () => {
   const handleApprove = async (courseId) => {
     try {
       await axios.put(
-        `http://127.0.0.1:8000/admin/approve/${courseId}`,
+        `${API_BASE}/admin/approve/${courseId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -103,7 +107,7 @@ const AdminDashboard = () => {
   const updateRole = async (userId, newRole) => {
     try {
       await axios.put(
-        `http://127.0.0.1:8000/admin/users/${userId}`,
+        `${API_BASE}/admin/users/${userId}`,
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } }
       );

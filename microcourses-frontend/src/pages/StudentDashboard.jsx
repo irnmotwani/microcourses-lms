@@ -12,6 +12,9 @@ const StudentDashboard = () => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [progressData, setProgressData] = useState({});
   const [lessons, setLessons] = useState({});
+  
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://microcourses-lms.onrender.com";
+
 
   // ✅ Load user, approved courses, and enrollments
   useEffect(() => {
@@ -26,12 +29,12 @@ const StudentDashboard = () => {
       });
 
       axios
-        .get("http://127.0.0.1:8000/courses/approved")
+        .get(`${API_BASE}/courses/approved`)
         .then((res) => setApprovedCourses(res.data))
         .catch(() => console.error("❌ Failed to load approved courses"));
 
       axios
-        .get("http://127.0.0.1:8000/students/enrollments", {
+        .get(`${API_BASE}/students/enrollments`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => setEnrolledCourses(res.data))
@@ -46,7 +49,7 @@ const StudentDashboard = () => {
   const fetchLessons = async (courseId) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/lessons/course/${courseId}`, {
+      const res = await axios.get(`${API_BASE}/lessons/course/${courseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLessons((prev) => ({
@@ -75,7 +78,7 @@ const StudentDashboard = () => {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/students/complete-lesson",
+        `${API_BASE}/students/complete-lesson`,
         { lesson_id: lessonId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -90,10 +93,9 @@ const StudentDashboard = () => {
   const fetchProgress = async (courseId) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get(
-        `http://127.0.0.1:8000/students/progress/${courseId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await axios.get(`${API_BASE}/students/progress/${courseId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setProgressData((prev) => ({
         ...prev,
         [courseId]: res.data,
@@ -108,7 +110,7 @@ const StudentDashboard = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.post(
-        "http://127.0.0.1:8000/students/enroll",
+        `${API_BASE}/students/enroll`,
         { course_id: course.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -124,7 +126,7 @@ const StudentDashboard = () => {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8000/students/certificate/${courseId}`,
+        `${API_BASE}/students/certificate/${courseId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob", // get as PDF

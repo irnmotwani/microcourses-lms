@@ -16,6 +16,7 @@ const Auth = () => {
     role: "student",
   });
   const [loading, setLoading] = useState(false);
+  
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,11 +24,12 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://microcourses-lms.onrender.com";
 
     try {
       if (isRegistering) {
         // Registration API call
-        await axios.post("http://127.0.0.1:8000/users/register", formData);
+        await axios.post(`${API_BASE}/users/register`, formData);
         toast.success("🎉 Registration successful! Please login now.");
         setIsRegistering(false);
       } else {
@@ -36,7 +38,7 @@ const Auth = () => {
         data.append("username", formData.email);
         data.append("password", formData.password);
 
-        const res = await axios.post("http://127.0.0.1:8000/login/", data, {
+        const res = await axios.post(`${API_BASE}/login/`, data, {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
 
