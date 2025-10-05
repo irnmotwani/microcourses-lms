@@ -1,25 +1,32 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 
-# Database URL — using SQLite for now
-DATABASE_URL = "sqlite:///./microcourses.db"
+# ✅ Load environment variables from .env file
+load_dotenv()
 
-# Create the engine
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# ✅ Read DATABASE_URL from environment variables
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Create a configured "SessionLocal" class
+if not DATABASE_URL:
+    raise ValueError("❌ DATABASE_URL not found in environment variables!")
+
+# ✅ Create the SQLAlchemy engine
+engine = create_engine(DATABASE_URL)
+
+# ✅ Create a configured SessionLocal class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base class for models
+# ✅ Base class for all database models
 Base = declarative_base()
 
-# ✅ The missing function
+# ✅ Dependency for FastAPI routes to get DB session
 def get_db():
     """
-    Dependency that provides a database session to FastAPI routes.
+    Provides a database session for routes.
+    Automatically closes the session after use.
     """
     db = SessionLocal()
     try:
