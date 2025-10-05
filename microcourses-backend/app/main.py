@@ -24,24 +24,23 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# ✅ Dynamic CORS — works for both local + production
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://microcourses-lms.netlify.app")
-
+# ✅ CORS — Allow all for testing (you can restrict later)
 origins = [
-    FRONTEND_URL,             # Production frontend
-    "http://localhost:5173",  # Local frontend
-    "http://127.0.0.1:5173",  # Local fallback
+    "https://microcourses-lms.netlify.app",  # your Netlify frontend
+    "http://localhost:5173",                 # for local dev
+    "http://127.0.0.1:5173",
+    "*",                                     # allow all (for debugging Render CORS issues)
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],   # Allow all HTTP methods
+    allow_methods=["*"],   # GET, POST, PUT, DELETE
     allow_headers=["*"],   # Allow all headers
 )
 
-# ✅ Include all routers
+# ✅ Include routes
 app.include_router(user_routes.router)
 app.include_router(auth_routes.router)
 app.include_router(admin_routes.router)
@@ -52,8 +51,8 @@ app.include_router(student_routes.router)
 app.include_router(progress_routes.router)
 app.include_router(certificate_routes.router)
 
-# ✅ Root endpoint (for Render health check)
+# ✅ Root endpoint
 @app.get("/")
 def home():
-    return {"message": "Welcome to MicroCourses LMS API 🚀", "status": "running"}
+    return {"message": "Welcome to MicroCourses LMS API 🚀", "CORS": "Enabled"}
 
