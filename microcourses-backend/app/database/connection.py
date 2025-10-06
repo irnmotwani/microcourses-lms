@@ -13,8 +13,16 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("❌ DATABASE_URL not found in environment variables!")
 
-# ✅ Create the SQLAlchemy engine
-engine = create_engine(DATABASE_URL)
+# ✅ Create SQLAlchemy Engine for Production (Neon + Render)
+# pool_pre_ping = ensures old connections are refreshed automatically
+# pool_recycle = recreates connection every 30 minutes (to prevent timeout)
+# connect_args = enforces SSL for Neon PostgreSQL
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=1800,
+    connect_args={"sslmode": "require"},
+)
 
 # ✅ Create a configured SessionLocal class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
